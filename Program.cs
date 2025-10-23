@@ -10,6 +10,10 @@ namespace PopesculG_tema04
     {
         static void Main(string[] args)
         {
+            using (Window3D window = new Window3D())
+            {
+                window.Run(60.0);
+            }
         }
     }
 }
