@@ -19,12 +19,13 @@ namespace PopesculG_tema04
         private float size;
         private int divisions;
         private Color color;
-        public Grid(float size, int divisions, Color color)
+        private Color DEFAULT_COLOR = Color.Aqua;
+        public Grid(float size, int divisions)
         {
             this.size = size;
             this.divisions = divisions;
             this.visible = true;
-            this.color = color;
+            this.color = DEFAULT_COLOR;
         }
         /// <summary>
         /// Comuta vizibilitatea grilei
@@ -41,6 +42,15 @@ namespace PopesculG_tema04
         {
             color = newColor;
         }
+
+        /// <summary>
+        /// Reseteaza culoarea grilei la cea implicita
+        /// </summary>
+        public void ResetColor()
+        {
+            color = DEFAULT_COLOR;
+        }
+
         /// <summary>
         /// Deseneaza grila
         /// </summary>

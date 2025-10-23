@@ -17,22 +17,25 @@ namespace PopesculG_tema04
 
     internal class Window3D : GameWindow
     {
-        // input tastatura
+        // input periferice
         KeyboardState previousKeys;
+        MouseState previousMouse;
         //declarare obiecte
         Grid grid;
         Camera3D cam;
         Axis axis;
         Random random;
+        List<Obj3D> objs;
 
         public Window3D(): base(800,600,new GraphicsMode(32,24,0,8))
         {
             VSync = VSyncMode.On;
             // initializari
-            grid = new Grid(30, 10,Color.Aqua);
+            grid = new Grid(100, 10);
             cam = new Camera3D(new Vector3(30, 30, 30), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
             axis = new Axis();
             random = new Random();
+            objs = new List<Obj3D>();
             // ajutor
             Help();
         }
@@ -64,6 +67,8 @@ namespace PopesculG_tema04
             GL.LoadMatrix(ref perspective);
             // camera
             cam.UpdateCamera();
+
+            // Actualizare pozitie obiecte
         }
         /// <summary>
         /// Pentru preluarea comenzilor de tastatura/mouse
@@ -74,28 +79,49 @@ namespace PopesculG_tema04
             base.OnUpdateFrame(e);
 
             // comenzi tastatura
+
             KeyboardState currentKeys = Keyboard.GetState();
+            // parasire program
             if (currentKeys.IsKeyDown(Key.Escape))
             {
                 Exit();
             }
+            // mesaj ajutor
             if (currentKeys.IsKeyDown(Key.H) && !previousKeys.IsKeyDown(Key.H))
             {
                 Help();
             }
-            if (currentKeys.IsKeyDown(Key.G) && !previousKeys.IsKeyDown(Key.G))
+            // vizibilitate grila
+            if (currentKeys.IsKeyDown(Key.Z) && !previousKeys.IsKeyDown(Key.Z))
             {
                 grid.ToggleVisibility();
             }
-            if (currentKeys.IsKeyDown(Key.R) && !previousKeys.IsKeyDown(Key.R))
-            {
-                grid.SetColor(Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)));
-            }
+            // vizibilitate axe
             if (currentKeys.IsKeyDown(Key.X) && !previousKeys.IsKeyDown(Key.X))
             {
                 axis.ToggleVisibility();
             }
-            // miscare camera
+            // culoare grila aleatoare
+            if (currentKeys.IsKeyDown(Key.C) && !previousKeys.IsKeyDown(Key.C))
+            {
+                grid.SetColor(Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)));
+            }
+            // vizibilitate obiecte
+            if (currentKeys.IsKeyDown(Key.V) && !previousKeys.IsKeyDown(Key.V))
+            {
+                foreach (Obj3D obj in objs)
+                {
+                    obj.ToggleVisibility();
+                }
+            }
+            // resetare scena
+            if (currentKeys.IsKeyDown(Key.R) && !previousKeys.IsKeyDown(Key.R))
+            {
+                objs = new List<Obj3D>();
+                grid.ResetColor();
+            }
+
+            // miscare camera pe axe
             if (currentKeys.IsKeyDown(Key.Q))
             {
                 cam.Move(new Vector3(0, 1, 0));
@@ -118,15 +144,28 @@ namespace PopesculG_tema04
             }
             if (currentKeys.IsKeyDown(Key.W))
             {
-                cam.Move(new Vector3(0, 0, -1));
+                cam.Move(new Vector3(0, 0, 1));
                 cam.UpdateCamera();
             }
             if (currentKeys.IsKeyDown(Key.S))
             {
-                cam.Move(new Vector3(0, 0, 1));
+                cam.Move(new Vector3(0, 0, -1));
                 cam.UpdateCamera();
             }
             previousKeys = currentKeys;
+
+            // comenzi mouse
+            MouseState currentMouse = Mouse.GetState();
+            if (currentMouse[MouseButton.Left] && !previousMouse[MouseButton.Left])
+            {
+                objs.Add(new Obj3D());
+            }
+            previousMouse = currentMouse;
+
+            foreach (Obj3D obj in objs)
+            {
+                obj.UpdatePosition();
+            }
         }
         /// <summary>
         /// Pentru desenare in fereastra
@@ -141,6 +180,10 @@ namespace PopesculG_tema04
             // desenare obiecte
             grid.Draw();
             axis.Draw();
+            foreach (Obj3D obj in objs)
+            {
+                obj.Draw();
+            }
 
             // incarcare scena
             SwapBuffers();
@@ -153,10 +196,13 @@ namespace PopesculG_tema04
             Console.WriteLine("Ajutor: ");
             Console.WriteLine("ESC - iesire");
             Console.WriteLine("H - ajutor");
-            Console.WriteLine("G - vizibilitate grid");
-            Console.WriteLine("R - culoare grid aleatoare");
+            Console.WriteLine("Z - vizibilitate grid");
             Console.WriteLine("X - vizibilitate axe");
+            Console.WriteLine("C - culoare grid aleatoare");
+            Console.WriteLine("V - vizibilitate obiecte");
+            Console.WriteLine("R - resetare scena");
             Console.WriteLine("W,A,S,D,Q,E - miscare camera");
+            Console.WriteLine("Click stanga mouse - creare obiect");
         }
     }
 }
