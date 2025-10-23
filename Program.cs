@@ -12,7 +12,7 @@ namespace PopesculG_tema04
         {
             using (Window3D window = new Window3D())
             {
-                window.Run(60.0);
+                window.Run(30.0);
             }
         }
     }
