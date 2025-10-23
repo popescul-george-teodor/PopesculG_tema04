@@ -27,9 +27,11 @@ namespace PopesculG_tema04
         Random random;
         List<Obj3D> objs;
 
+        bool GRAVITY = true;
+
         public Window3D(): base(800,600,new GraphicsMode(32,24,0,8))
         {
-            VSync = VSyncMode.On;
+            VSync = VSyncMode.On; //activare VSync
             // initializari
             grid = new Grid(100, 10);
             cam = new Camera3D(new Vector3(30, 30, 30), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
@@ -114,11 +116,21 @@ namespace PopesculG_tema04
                     obj.ToggleVisibility();
                 }
             }
+            // gravitatie obiecte
+            if (currentKeys.IsKeyDown(Key.F) && !previousKeys.IsKeyDown(Key.F))
+            {
+                GRAVITY = !GRAVITY;
+                foreach (Obj3D obj in objs)
+                {
+                    obj.SetGravity(GRAVITY);
+                }
+            }
             // resetare scena
             if (currentKeys.IsKeyDown(Key.R) && !previousKeys.IsKeyDown(Key.R))
             {
-                objs = new List<Obj3D>();
+                objs.Clear();
                 grid.ResetColor();
+                GRAVITY = true;
             }
 
             // miscare camera pe axe
@@ -158,10 +170,11 @@ namespace PopesculG_tema04
             MouseState currentMouse = Mouse.GetState();
             if (currentMouse[MouseButton.Left] && !previousMouse[MouseButton.Left])
             {
-                objs.Add(new Obj3D());
+                objs.Add(new Obj3D(GRAVITY));
             }
             previousMouse = currentMouse;
 
+            // actualizare pozitii obiecte
             foreach (Obj3D obj in objs)
             {
                 obj.UpdatePosition();
@@ -200,6 +213,7 @@ namespace PopesculG_tema04
             Console.WriteLine("X - vizibilitate axe");
             Console.WriteLine("C - culoare grid aleatoare");
             Console.WriteLine("V - vizibilitate obiecte");
+            Console.WriteLine("F - gravitatie obiecte");
             Console.WriteLine("R - resetare scena");
             Console.WriteLine("W,A,S,D,Q,E - miscare camera");
             Console.WriteLine("Click stanga mouse - creare obiect");

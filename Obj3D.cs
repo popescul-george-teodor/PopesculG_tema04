@@ -22,11 +22,11 @@ namespace PopesculG_tema04
         private Random random;
         private const int GRAVITY_OFFSET = 1;
 
-        public Obj3D()
+        public Obj3D(bool gravityEffect)
         {
             //initializari
             visible = true;
-            gravity = true;
+            this.gravity = gravityEffect;
             random = new Random();
             color = Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
             coords = new List<Vector3>();
@@ -59,6 +59,14 @@ namespace PopesculG_tema04
         /// </summary>
         public void ToggleGravity() {
             gravity = !gravity;
+        }
+        /// <summary>
+        /// Seteaza efectul gravitatiei asupra obiectului
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetGravity(bool value)
+        {
+            gravity = value;
         }
         /// <summary>
         /// Actualizeaza pozitia obiectului in scena
